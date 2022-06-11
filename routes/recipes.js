@@ -8,13 +8,19 @@ router.get("/", (req, res) => res.send("im here"));
 /**
  * This path returns a full details of a recipe by its id
  */
-router.get("/:recipeId", async (req, res, next) => {
+router.get("/recipe", async (req, res, next) => {
   try {
-    const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);
+    const recipe = await recipes_utils.getRecipeDetails(req.query.id);
     res.send(recipe);
   } catch (error) {
     next(error);
   }
 });
 
+
+
+//router.post("/recipe", async (req, res, next) => {
+
+
+////router.post("/familyRecipe", async (req, res, next) => {
 module.exports = router;

@@ -1,0 +1,886 @@
+---
+openapi: 3.0.3
+info:
+  title: Recipies Website
+  description: This is a first API for our Recipies Website
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/Svivot_Project/Ass-3.1/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: Register
+  description: Create new user in the system
+- name: Login
+  description: Log in to the website with an existing user
+- name: About
+  description: Short marketing explanation on the development team and the project
+- name: Recipe
+  description: Recipe page with all of its details
+- name: HomePage
+  description: The home page of the app
+- name: SearchRecipe
+  description: The page that allow search recipes.
+- name: CreateRecipe
+  description: the Modal page to insert a new recipee to the db
+- name: FamilyRecipesPage
+  description: all the family recipes of a user in preview format
+- name: FavouriteRecipesPage
+  description: all the favorite recipes of a user in preview format
+- name: PersonalRecipesPage
+  description: all the  recipes that the  user own in preview format
+paths:
+  /HomePage:
+    get:
+      tags:
+      - HomePage
+      summary: The home page of the app
+      description: The home page of the app. Includes 3 random recipes and 3 Last watched recipes.
+      responses:
+        "200":
+          description: Home page was loaded succssesfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomePage'
+        "400":
+          description: Invalid input
+        "404":
+          description: Page not found
+  /HomePage/{random}:
+    get:
+      tags:
+      - HomePage
+      summary: Gets 3 random recipes
+      description: Gets 3 random recipes that will be shown in the home page from the server
+      parameters:
+      - name: random
+        in: path
+        description: Gets 3 random recipes that will be shown in the home page from the server
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/RecipePreview'
+      responses:
+        "200":
+          description: Successfully pulled the random recipes info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RandomRecipes'
+        "404":
+          description: page not found
+        "400":
+          description: Invalid input
+  /HomePage/{lastwatched}:
+    get:
+      tags:
+      - HomePage
+      summary: Gets 3 last watched recipes
+      description: Gets 3 last watched recipes of the user that will be shown in the home page from the server
+      parameters:
+      - name: lastwatched
+        in: path
+        description: Gets 3 last watched recipes of the user that will be shown in the home page from the server
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/RecipePreview'
+      responses:
+        "200":
+          description: Successfully pulled last watched recipes info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LastWatchedRecipes'
+        "404":
+          description: page not found
+        "400":
+          description: Invalid input
+  /Register:
+    post:
+      tags:
+      - Register
+      summary: Create user
+      description: Create new user in the system
+      operationId: register
+      requestBody:
+        description: User to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        "200":
+          description: A new user has been created
+        "400":
+          description: invalid input, object invalid
+        "409":
+          description: an existing user already exists
+  /Login:
+    post:
+      tags:
+      - Login
+      summary: Login with user
+      description: login with an existing user to the system
+      operationId: login
+      requestBody:
+        description: User to be logged in
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+        required: true
+      responses:
+        "200":
+          description: A new user has been logged in
+        "400":
+          description: invalid input, object invalid
+        "409":
+          description: There is no such user
+  /About:
+    get:
+      tags:
+      - About
+      summary: Login with user
+      description: login with an existing user to the system
+      operationId: about
+      responses:
+        "200":
+          description: About page was shown
+        "401":
+          description: Unauthenticated
+        "404":
+          description: Page not found
+  /Recipe/{id}:
+    get:
+      tags:
+      - Recipe
+      summary: Recipe in the website
+      description: Recipe page with all of its details
+      parameters:
+      - name: id
+        in: path
+        description: Enter the id of the recipe you would like to get
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: "20174"
+      responses:
+        "200":
+          description: Successfully pulled the recipe's info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+        "404":
+          description: Player not found
+        "400":
+          description: Invalid input
+  /FavouriteRecipesPage/{username}:
+    get:
+      tags:
+      - User
+      summary: favorite recipes of a user
+      description: Returns a list of all the favorite recipes of a user in preview format
+      parameters:
+      - name: username
+        in: path
+        description: Enter the id of the user that in the system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Chen2222
+      responses:
+        "200":
+          description: Successfully pulled the user recipees in preview format  list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "204":
+          description: there are noresults for the user
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /FamilyRecipesPage/{username}:
+    get:
+      tags:
+      - Recipe
+      summary: recipes of  user's family
+      description: Returns a list of recipes that owned by the user family members in preview format
+      parameters:
+      - name: username
+        in: path
+        description: Enter the id of the user that in the system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Chen2222
+      responses:
+        "200":
+          description: Successfully pulled the user's family members recipees in preview format  list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FamilyRecipePreview'
+        "204":
+          description: there are noresults for the user
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /PersonalRecipesPage/{username}:
+    get:
+      tags:
+      - Recipe
+      summary: favorite recipes of a user
+      description: Returns a list of all the recipes of a user in preview format
+      parameters:
+      - name: username
+        in: path
+        description: Enter the id of the user that in the system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Chen2222
+      responses:
+        "200":
+          description: Successfully pulled the user recipees in preview format  list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "204":
+          description: there are noresults for the user
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /CreateRecipe:
+    get:
+      tags:
+      - Recipe
+      summary: showCreateRecipePage
+      description: show CreateRecipePage
+      operationId: Create Recipe
+      responses:
+        "200":
+          description: create Recipe page was shown
+        "404":
+          description: Page not found
+  /CreateRecipe/{name}:
+    post:
+      tags:
+      - Recipe
+      summary: recipe the user wants to add to db
+      description: create a recipe and RecupePreviw in the db
+      parameters:
+      - name: name
+        in: path
+        description: Enter the recipe name
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Choclate Cake
+      responses:
+        "201":
+          description: Successfully a new recipe was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /CreateRecipe/{picture}:
+    post:
+      tags:
+      - Recipe
+      summary: recipe the user wants to add to db
+      description: create a recipe and RecupePreviw in the db
+      parameters:
+      - name: picture
+        in: path
+        description: insert the picture of the cake file
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: cake.png
+      responses:
+        "201":
+          description: Successfully a new recipe was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /CreateRecipe/{time}:
+    post:
+      tags:
+      - Recipe
+      summary: recipe the user wants to add to db
+      description: create a recipe and RecupePreviw in the db
+      parameters:
+      - name: time
+        in: path
+        description: insert the time of preparing the recipe in minutes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 10
+      responses:
+        "201":
+          description: Successfully a new recipe was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /CreateRecipe/{isveg}:
+    post:
+      tags:
+      - Recipe
+      summary: recipe the user wants to add to db
+      description: create a recipe and RecupePreviw in the db
+      parameters:
+      - name: isveg
+        in: path
+        description: is the recipe match for vegetarians?
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: boolean
+          example: false
+      responses:
+        "201":
+          description: Successfully a new recipe was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /CreateRecipe/{isgluten}:
+    post:
+      tags:
+      - Recipe
+      summary: recipe the user wants to add to db
+      description: create a recipe and RecupePreviw in the db
+      parameters:
+      - name: isgluten
+        in: path
+        description: is the recipe without gluten?
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: boolean
+          example: false
+      responses:
+        "201":
+          description: Successfully a new recipe was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /CreateRecipe/{ingredients}:
+    post:
+      tags:
+      - Recipe
+      summary: recipe the user wants to add to db
+      description: create a recipe and RecupePreviw in the db
+      parameters:
+      - name: ingredients
+        in: path
+        description: List of ingridients and amount needed
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Flour 1 cup, milk 0.5 cup, oil 0.5 cup
+      responses:
+        "201":
+          description: Successfully a new recipe was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /CreateRecipe/{instructions}:
+    post:
+      tags:
+      - Recipe
+      summary: recipe the user wants to add to db
+      description: create a recipe and RecupePreviw in the db
+      parameters:
+      - name: instructions
+        in: path
+        description: Verbal instructions of how to make this recipe
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Mix the flour the sugar and the pop seeds. set aside...
+      responses:
+        "201":
+          description: Successfully a new recipe was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /CreateRecipe/{dishnum}:
+    post:
+      tags:
+      - Recipe
+      summary: recipe the user wants to add to db
+      description: create a recipe and RecupePreviw in the db
+      parameters:
+      - name: dishnum
+        in: path
+        description: insert the number of ingrediants in the dishes
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 10
+      responses:
+        "201":
+          description: Successfully a new recipe was created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /SearchRecipe:
+    get:
+      tags:
+      - Recipe
+      summary: showSearchRecipePage
+      description: showSearchRecipePage
+      operationId: SearchRecipe
+      responses:
+        "200":
+          description: search Recipe page was shown
+        "404":
+          description: Page not found
+  /SearchRecipe/{number_of_results}:
+    get:
+      tags:
+      - Recipe
+      summary: searching recipees
+      description: searching for specific recipees according to criterias.
+      parameters:
+      - name: number_of_results
+        in: path
+        description: Enter the limit number of results [5/10/15]
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: "5"
+      responses:
+        "200":
+          description: Successfully returned search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "204":
+          description: there are no search results
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /SearchRecipe/{recipe_name}:
+    get:
+      tags:
+      - Recipe
+      summary: searching recipees
+      description: searching for specific recipees according to criterias.
+      parameters:
+      - name: recipe_name
+        in: path
+        description: insert the recipe name to search for
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Choclate cake for birthday
+      responses:
+        "200":
+          description: Successfully returned search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "204":
+          description: there are no search results
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /SearchRecipe/{food_name}:
+    get:
+      tags:
+      - Recipe
+      summary: searching recipees
+      description: searching for specific recipees according to criterias.
+      parameters:
+      - name: food_name
+        in: path
+        description: insert the food name to search for
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: cake
+      responses:
+        "200":
+          description: Successfully returned search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "204":
+          description: there are no search results
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /SearchRecipe/{diet_filter_list}:
+    get:
+      tags:
+      - Recipe
+      summary: searching recipees
+      description: searching for specific recipees according to criterias.
+      parameters:
+      - name: diet_filter_list
+        in: path
+        description: list of diet filter strings the food match to
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: ketogenic
+      responses:
+        "200":
+          description: Successfully returned search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "204":
+          description: there are no search results
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /SearchRecipe/{cuisine_filter_list}:
+    get:
+      tags:
+      - Recipe
+      summary: searching recipees
+      description: searching for specific recipees according to criterias.
+      parameters:
+      - name: cuisine_filter_list
+        in: path
+        description: list of cuisine filter strings
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: African
+      responses:
+        "200":
+          description: Successfully returned search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "204":
+          description: there are no search results
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+  /SearchRecipe/{intolerance_filter_list}:
+    get:
+      tags:
+      - Recipe
+      summary: searching recipees
+      description: searching for specific recipees according to criterias.
+      parameters:
+      - name: intolerance_filter_list
+        in: path
+        description: list of intolerance filter strings the food ingredient
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: Egg
+      responses:
+        "200":
+          description: Successfully returned search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOfPreviewRecipe'
+        "204":
+          description: there are no search results
+        "400":
+          description: Invalid input
+        "500":
+          description: if something in the server went wrong
+components:
+  schemas:
+    User:
+      required:
+      - country
+      - email
+      - first name
+      - last name
+      - password
+      - password confirmation
+      - username
+      type: object
+      properties:
+        username:
+          maxLength: 8
+          minLength: 3
+          type: string
+          description: Username contains 3 to 8 letters
+          example: hellobe
+        first name:
+          type: string
+          description: User's first name
+          example: Mor
+        last name:
+          type: string
+          description: User's last name
+          example: Levi
+        country:
+          type: string
+          description: User's country taken from https://restcountries.eu/rest/v3.1/all
+          example: Israel
+        password:
+          maxLength: 10
+          minLength: 5
+          type: string
+          description: |
+            User's password contains 5 to 10 letters. At least 1 number and 1 special sign
+          format: password
+          example: bguser1#
+        email:
+          type: string
+          description: User's email address
+          example: blabla@gmail.com
+        profile pic:
+          type: string
+          description: URL for the user's image
+          example: https://cloudinary.com/ladygaga
+      description: Model containing user info
+    UserLogin:
+      required:
+      - password
+      - username
+      type: object
+      properties:
+        username:
+          $ref: '#/components/schemas/User/properties/username'
+        password:
+          $ref: '#/components/schemas/User/properties/password'
+      description: Model containing user info for login process
+    RecipePreview:
+      type: object
+      properties:
+        picture:
+          type: string
+          description: Recipe's picture
+          example: https://cloudinary.com/bluebeerymuffin
+        name:
+          type: string
+          description: Recipe's name that contains letters only
+          example: blueberry muffin with cream frosting
+        time:
+          type: string
+          description: Amnount of time it takes to make this recpie
+          example: 2 hours
+        popularity:
+          type: number
+          description: Number of likes this recipe has received
+          example: 60
+        isveg:
+          type: boolean
+          description: Is this recipe vegan?
+          example: true
+        isgluten:
+          type: boolean
+          description: Is this recipe contain gluten?
+          example: true
+        waswatched:
+          type: boolean
+          description: Was this recipe watched already by the user?
+          example: true
+        isfavourite:
+          type: boolean
+          description: Is this recpie in the favourite list of the user?
+          example: true
+      description: Single recipe and all of its details
+    Recipe:
+      type: object
+      properties:
+        picture:
+          $ref: '#/components/schemas/RecipePreview/properties/picture'
+        name:
+          $ref: '#/components/schemas/RecipePreview/properties/name'
+        time:
+          $ref: '#/components/schemas/RecipePreview/properties/time'
+        popularity:
+          $ref: '#/components/schemas/RecipePreview/properties/popularity'
+        isveg:
+          $ref: '#/components/schemas/RecipePreview/properties/isveg'
+        isgluten:
+          $ref: '#/components/schemas/RecipePreview/properties/isgluten'
+        waswatched:
+          $ref: '#/components/schemas/RecipePreview/properties/waswatched'
+        Ingridients:
+          type: string
+          description: List of ingridients and amount needed
+          example: Flour 1 cup, milk 0.5 cup, oil 0.5 cup
+        Instructions:
+          type: string
+          description: Verbal instructions of how to make this recipe
+          example: Mix the flour the sugar and the pop seeds. set aside...
+        dishnum:
+          type: number
+          description: Number of dishes this recipe will end up with considering the amount of ingridients
+          example: 24
+      description: Single recipe and all of its details
+    HomePage:
+      type: object
+      properties:
+        RandomRecipes:
+          $ref: '#/components/schemas/RandomRecipes'
+        LastWatchedRecipes:
+          $ref: '#/components/schemas/LastWatchedRecipes'
+    LastWatchedRecipes:
+      type: array
+      description: 3 Last watched recipes on the right side of the screen (if logged in)else, will show log in and register buttons.
+      example:
+      - recepie1
+      - recepie2
+      - recepie3
+      items:
+        $ref: '#/components/schemas/RecipePreview'
+    RandomRecipes:
+      type: array
+      description: 3 random recipes on the left side of the screen
+      example:
+      - recepie1
+      - recepie2
+      - recepie3
+      items:
+        $ref: '#/components/schemas/RecipePreview'
+    ListOfPreviewRecipe:
+      type: array
+      description: list of recipes in preview format
+      example:
+      - previewrecepie1
+      - previewrecepie2
+      - previewrecepie3
+      items:
+        $ref: '#/components/schemas/FamilyRecipePreview'
+    FamilyRecipePreview:
+      type: object
+      properties:
+        picture:
+          type: string
+          description: Recipe's picture
+          example: https://cloudinary.com/bluebeerymuffin
+        name:
+          type: string
+          description: Recipe's name that contains letters only
+          example: blueberry muffin with cream frosting
+        time:
+          type: string
+          description: Amnount of time it takes to make this recpie
+          example: 2 hours
+        holiday/event:
+          type: string
+          description: name of the occision at which the food is usually baked.
+          example: 2 hours
+        popularity:
+          type: number
+          description: Number of likes this recipe has received
+          example: 60
+        isveg:
+          type: boolean
+          description: Is this recipe vegan?
+          example: true
+        isgluten:
+          type: boolean
+          description: Is this recipe contain gluten?
+          example: true
+        waswatched:
+          type: boolean
+          description: Was this recipe watched already by the user?
+          example: true
+        isfavourite:
+          type: boolean
+          description: Is this recpie in the favourite list of the user?
+          example: true
+      description: Single recipe and all of its details

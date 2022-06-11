@@ -73,6 +73,8 @@ app.use(function (req, res, next) {
 });
 //#endregion
 
+//======== GET ALIVE ================
+
 // ----> For cheking that our server is alive
 app.get("/alive", (req, res) => res.send("I'm alive"));
 
@@ -88,7 +90,7 @@ app.use(function (err, req, res, next) {
 });
 
 
-
+////========== SERVER OPEN & CLOSE ======================
 const server = app.listen(port, () => {
   console.log(`Server listen on port ${port}`);
 });
@@ -99,3 +101,4 @@ process.on("SIGINT", function () {
   }
   process.exit();
 });
+
