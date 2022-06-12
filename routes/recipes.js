@@ -1,4 +1,6 @@
 var express = require("express");
+const { system } = require("nodemon/lib/config");
+const { stdout } = require("nodemon/lib/config/defaults");
 var router = express.Router();
 const recipes_utils = require("./utils/recipes_utils");
 
@@ -18,9 +20,36 @@ router.get("/recipe", async (req, res, next) => {
 });
 
 
+router.get("/random", async (req, res, next) => {
+  try {
+    const recipe = await recipes_utils.getRandomRecipes();
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+router.get("/searchRecipe", async (req, res, next) => {
+  try {
+
+    const recipes = await recipes_utils.getSearchResults(req.query.query,req.query.titleMatch,req.query.number,req.query.cuisine,req.query.diet,req.query.intolerances)
+    // if (recipes==[]){
+    //   throw { status: 204, message: "No results" };
+    // }
+    
+    
+    //res.status(200).send({ message: "results returned", success: true });
+    res.send(recipes);
+    
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 
 //router.post("/recipe", async (req, res, next) => {
-
 
 ////router.post("/familyRecipe", async (req, res, next) => {
 module.exports = router;
