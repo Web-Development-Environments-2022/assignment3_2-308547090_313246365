@@ -91,7 +91,7 @@ async function getRandomRecipes() {
             apiKey: process.env.spooncular_apiKey
         }
     });
-    return response;
+    return response.data;
 }
 
 
