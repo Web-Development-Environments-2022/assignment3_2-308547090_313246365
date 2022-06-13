@@ -183,6 +183,7 @@ exports.getRandomRecipes =getRandomRecipes;
 exports.getRecipeDetails = getRecipeDetails;
 exports.searchRecipes = searchRecipes;
 exports.getSearchResults = getSearchResults;
+exports.getRecipesPreview = getRecipesPreview;
 
 
 
