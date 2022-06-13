@@ -51,5 +51,4 @@ router.get("/searchRecipe", async (req, res, next) => {
 
 //router.post("/recipe", async (req, res, next) => {
 
-////router.post("/familyRecipe", async (req, res, next) => {
 module.exports = router;

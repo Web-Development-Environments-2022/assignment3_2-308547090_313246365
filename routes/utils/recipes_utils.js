@@ -179,10 +179,11 @@ async function getSearchResults(query1, titleMatch1, number1 ,cuisine1, diet1, i
 
 
 
-exports.getRandomRecipes =getRandomRecipes;
+exports.getRandomRecipes = getRandomRecipes;
 exports.getRecipeDetails = getRecipeDetails;
 exports.searchRecipes = searchRecipes;
 exports.getSearchResults = getSearchResults;
+exports.getRecipesPreview = getRecipesPreview;
 
 
 
