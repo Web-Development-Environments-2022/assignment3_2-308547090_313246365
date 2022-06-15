@@ -44,77 +44,49 @@ router.get('/favorites', async (req,res,next) => {
     let favorite_recipes = {};
     const recipes_id = await user_utils.getFavoriteRecipes(user_id);
     let recipes_id_array = [];
-    console.log(recipes_id);
+    // console.log(recipes_id);
     recipes_id.map((element) => recipes_id_array.push(element.id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
+    let results = await recipe_utils.getRecipesPreview(recipes_id_array, user_id);
     res.status(200).send(results);
   } catch(error){
     next(error); 
   }
 });
 
-/**
- * This path gets body with recipeId and save this recipe in the watched list of the logged-in user
- */
- router.post('/watched', async (req,res,next) => {
-  try{
-    const user_id = req.session.user_id;
-    const recipe_id = req.body.recipeId;
-    await user_utils.markAsWatched(user_id,recipe_id);
-    res.status(200).send("The Recipe successfully saved as wacthed");
-    } catch(error){
-    next(error);
-  }
-})
-
-//TODO: Do we need to send back 3 last watched???
-/**
- * This path returns the watched recipes that were saved by the logged-in user
- */
-router.get('/watched', async (req,res,next) => {
-  try{
-    const user_id = req.session.user_id;
-    const recipes_id = await user_utils.getWatchedRecipes(user_id);
-  //   const lastWatchedRecipes = (
-  //     await DButils.execQuery(
-  //         `SELECT TOP 3 id FROM views WHERE username = '${username}' ORDER BY lastModify DESC`
-  //     )
-  // );
-    let recipes_id_array = [];
-    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
-    res.status(200).send(results);
-  } catch(error){
-    next(error); 
-  }
-});
-
-//Ask if do different method fo getRecipesPreview
-router.get('/family', async (req,res,next) => {
-  try{
-    const user_id = req.session.user_id;
-    const recipes_id = await user_utils.getFamilyRecipes(user_id);
-    let recipes_id_array = [];
-    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipesPreview(recipes_id_array);
-    res.status(200).send(results);
-  } catch(error){
-    next(error); 
-  }
-});
-
-//make my recipes table?
-// router.get('/personal', async (req,res,next) => {
+// /**
+//  * This path gets body with recipeId and save this recipe in the watched list of the logged-in user
+//  */
+//  router.post('/watched', async (req,res,next) => {
 //   try{
 //     const user_id = req.session.user_id;
-//     const recipes_id = await user_utils.getFamilyRecipes(user_id); //change method
-//     let recipes_id_array = [];
-//     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-//     const results = await recipe_utils.getRecipesPreview(recipes_id_array);
-//     res.status(200).send(results);
-//   } catch(error){
-//     next(error); 
+//     const recipe_id = req.body.recipeId;
+//     await user_utils.markAsWatched(user_id,recipe_id);
+//     res.status(200).send("The Recipe successfully saved as wacthed");
+//     } catch(error){
+//     next(error);
 //   }
-// });
+// })
+
+//Ask if do different method fo getRecipesPreview
+router.get('/familyRecipes', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const results = await recipe_utils.GetFromTable("FamilyRecipes",user_id);
+    res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
+
+
+router.get('/myRecipes', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const results = await recipe_utils.GetFromTable("Recipes",user_id);
+    res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
 
 module.exports = router;

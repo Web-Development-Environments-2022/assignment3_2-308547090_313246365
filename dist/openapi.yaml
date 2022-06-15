@@ -60,6 +60,7 @@ paths:
                 example: session=87s97sdhgf279293f8w0e9
         "401":
           description: Authentication failed
+
   /logout:
     post:
       tags:
@@ -68,6 +69,56 @@ paths:
       responses:
         "200":
           description: "the user has ben successfully logged out"
+  /alive:
+    get:
+      tags:
+        - Server Communication Check
+      summary: Checking if the server is on air. 
+      responses:
+        "200":
+          description: "I'm alive"
+
+  /users/myRecipes:
+    get:
+      tags:
+      - Users
+      summary: Returns preview of all the recipes that maded by the user
+      description: Returns preview of all the recipes that maded by the user
+      responses:
+        "200":
+          description: data about the user's  recipes returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/list_of_preview'
+        "201":
+          description: User didn't upload any recipe 
+        "401":
+          description: user is not authorized  
+
+  
+  /users/familyRecipes:
+    get:
+      tags:
+      - Users
+      summary: Returns contan of all the recipes that belongs to the user's family
+      description: Returns contan of all the recipes that belongs to the user's family
+      responses:
+        "200":
+          description: data about the user's  family recipes returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/list_of_family'
+        "201":
+          description: The user has no family recipes
+        "401":
+          description: user is not authorized  
+ 
   /users/favorites:
     get:
       tags:
@@ -109,12 +160,31 @@ paths:
           description: user is not authorized
       security:
       - cookieAuth: []
+
+  /users/recipe:
+    post:
+      tags:
+      - Users
+      summary: upload a recipe to the website 
+      description: upload a recipe to the website 
+      requestBody:
+        description: the new recipe details  to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadRecipe'
+        required: true
+      responses:
+        "201":
+          description: the recipe was created successfully
+        "404":
+          description: recipeId is not exists
   /recipes/{recipeId}:
     get:
       tags:
       - Recipes
-      summary: Return preview details on recipe by his ID
-      description: Return preview details on recipe by his ID
+      summary: Return full details on recipe by his ID
+      description: Return full details on recipe by his ID
       parameters:
       - name: recipeId
         in: path
@@ -130,9 +200,108 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RecipePreview'
+                $ref: '#/components/schemas/Recipe'
         "404":
           description: recipeId is not exists
+
+  /recipes/random:
+    get:
+      tags:
+      - Recipes
+      summary: Returns 3 random recipes in preview format 
+      description: Returns 3 random recipes in preview format 
+      responses:
+        "200":
+          description: three random recipes in preview format 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list_of_random'
+        "404":
+          description: recipeId is not exists
+  /recipes/searchRecipes/{query,titleMatch,number,cuisine,diet,intolerances}:
+    get:
+      tags:
+      - Recipes
+      summary: search recipes according to content of recipe, title, cuisine , diet and intolerance parameters
+      description: Return full details on recipe by his ID
+      parameters:
+      - name: query
+        in: path
+        description: text to search n content  
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: pasta
+      - name: titleMatch
+        in: path
+        description: text to search in recipe title 
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: pasta
+      
+      - name: number
+        in: path
+        description: number of results to retrive- 5/10/15 
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          example: 5
+      
+      - name: cuisine
+        in: path
+        description: the cuisine we want to filter by the results
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: italian
+        
+      - name: diet
+        in: path
+        description: the diet we want to filter by the results
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: vegeterian
+      
+      - name: intolerances
+        in: path
+        description: the intolerances whe want to filter by the results
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+          example: soy
+        
+      responses:
+        "200":
+          description: recipes that retrived from the search  
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/list_of_search'
+        "204":
+          description: No content to the search 
+
+        "404":
+          description: recipeId is not exists
+
+  
+
+
+
 components:
   schemas:
     User:
@@ -169,6 +338,9 @@ components:
           type: string
           description: user's email
           example: my_name12@gmail.com
+
+
+
         # image-url:
         #   pattern: URL
         #   type: string
@@ -227,4 +399,210 @@ components:
           type: boolean
           description: indication if the recipe is gluten free
           example: false
-  
+        wasWatched:
+          type: boolean
+          description: indication if the recipe was watched by the user or not, only for users that logged in otherwise false 
+          example: false
+        isFavourite:
+          type: boolean
+          description: indication if the recipe is in the favourite of the user's profile, only if he logs in otherwise false
+          example: false
+    UploadRecipe:
+      type: object
+      properties:
+        title:
+          type: string
+          description: recipe name
+          example: Simple Macaroni and Cheese
+        image:
+          type: string
+          description: recipe image
+          format: URL
+          example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+        readyInMinutes:
+          type: integer
+          description: the time takes to make this recipe
+          example: 45
+        vegetarian:
+          type: boolean
+          description: indication if the recipe is vegetarian
+          example: false
+        vegan:
+          type: boolean
+          description: indication if the recipe is vegan
+          example: false
+        glutenFree:
+          type: boolean
+          description: indication if the recipe is gluten free
+          example: false
+        ingredients:
+          type: string 
+          description: the ingredients of the recipe in a dictionary withe amount as value 
+          example: "{milk: 1 cup, eggs: 3}"
+        instructions:
+          type: string 
+          description: the instructions of the recipe in a dictionary of step number as key 
+          example: "{1: cut all the ingredients 2: mix all together}"
+        servings:
+          type: integer 
+          description: to how many people can eat the dish  
+          example: 4  
+    Recipe:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: recipe identifier
+          example: 102
+        user_id:
+          type: integer
+          description: user identifier
+          example: 1
+        title:
+          type: string
+          description: recipe name
+          example: Simple Macaroni and Cheese
+        image:
+          type: string
+          description: recipe image
+          format: URL
+          example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+        readyInMinutes:
+          type: integer
+          description: the time takes to make this recipe
+          example: 45
+        popularity:
+          type: integer
+          description: how many likes got this recipe
+          example: 5987
+        vegetarian:
+          type: boolean
+          description: indication if the recipe is vegetarian
+          example: false
+        vegan:
+          type: boolean
+          description: indication if the recipe is vegan
+          example: false
+        glutenFree:
+          type: boolean
+          description: indication if the recipe is gluten free
+          example: false
+        wasWatched:
+          type: boolean
+          description: indication if the recipe was watched by the user or not, only for users that logged in otherwise false 
+          example: false
+        isFavourite:
+          type: boolean
+          description: indication if the recipe is in the favourite of the user's profile, only if he logs in otherwise false
+          example: false
+        ingredients:
+          type: string 
+          description: the ingredients of the recipe in a dictionary withe amount as value 
+          example: "{milk: 1 cup, eggs: 3}"
+        instructions:
+          type: string 
+          description: the instructions of the recipe in a dictionary of step number as key 
+          example: "{1: cut all the ingredients 2: mix all together}"
+        servings:
+          type: integer 
+          description: to how many people can eat the dish  
+          example: 4
+    
+    FamilyRecipe:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: recipe identifier
+          example: 102
+        user_id:
+          type: integer
+          description: user identifier
+          example: 1
+        creator:
+          type: string
+          description: the name of the person who created the recipe 
+          example: "Grandmother Shoshi"
+        eating_time:
+          type: string
+          description: the occaison people used to make the recipe  
+          example: "Rosh Hashana Holiday"
+        title:
+          type: string
+          description: recipe name
+          example: Simple Macaroni and Cheese
+        image:
+          type: string
+          description: recipe image
+          format: URL
+          example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+        readyInMinutes:
+          type: integer
+          description: the time takes to make this recipe
+          example: 45
+        popularity:
+          type: integer
+          description: how many likes got this recipe
+          example: 5987
+        vegetarian:
+          type: boolean
+          description: indication if the recipe is vegetarian
+          example: false
+        vegan:
+          type: boolean
+          description: indication if the recipe is vegan
+          example: false
+        glutenFree:
+          type: boolean
+          description: indication if the recipe is gluten free
+          example: false
+        wasWatched:
+          type: boolean
+          description: indication if the recipe was watched by the user or not, only for users that logged in otherwise false 
+          example: false
+        isFavourite:
+          type: boolean
+          description: indication if the recipe is in the favourite of the user's profile, only if he logs in otherwise false
+          example: false
+        ingredients:
+          type: string 
+          description: the ingredients of the recipe in a dictionary withe amount as value 
+          example: "{milk: 1 cup, eggs: 3}"
+        instructions:
+          type: string 
+          description: the instructions of the recipe in a dictionary of step number as key 
+          example: "{1: cut all the ingredients 2: mix all together}"
+        servings:
+          type: integer 
+          description: to how many people can eat the dish  
+          example: 4
+    
+    list_of_random:
+      type: array 
+      description:  array of preview items
+      minItems: 3
+      maxItems: 3
+      items: 
+        $ref: '#/components/schemas/RecipePreview'
+
+
+    list_of_search:
+      type: array 
+      description:  array of Recipe items
+      minItems: 5
+      maxItems: 15
+      items: 
+        $ref: '#/components/schemas/Recipe'
+
+    
+    list_of_family:
+      type: array 
+      description:  array of FamilyRecipe items 
+      items:
+        $ref: '#/components/schemas/FamilyRecipe'
+    
+    list_of_preview:
+      type: array 
+      description:  array of RecipePreview items   
+      items: 
+          $ref: '#/components/schemas/RecipePreview'
