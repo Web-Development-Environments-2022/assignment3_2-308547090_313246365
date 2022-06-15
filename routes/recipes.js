@@ -15,11 +15,15 @@ router.get("/", (req, res) => res.send("im here"));
 router.get("/recipe", async (req, res, next) => {
   try {
     let user_id;
+    
     if (req.session && req.session.user_id){
       user_id = req.session.user_id;
+      await user_utils.markAsWatched(user_id,req.query.id);
     }
     const recipe = await recipes_utils.getRecipeDetails(req.query.id,user_id);
-    await user_utils.markAsWatched(user_id,req.query.id);
+    // if(recipe==null){
+    //   throw { status: 401, message: "recipe ID is not exists" }; 
+    // }
     res.send(recipe);
   } catch (error) {
     next(error);
@@ -42,7 +46,7 @@ router.get("/searchRecipe", async (req, res, next) => {
 
     const recipes = await recipes_utils.getSearchResults(req.query.query,req.query.titleMatch,req.query.number,req.query.cuisine,req.query.diet,req.query.intolerances,req.session.user_id)
     if (recipes.length==0){
-      throw { status: 204, message: "No results" };
+      throw { status: 204, message: " No results to the search" };
     }
   
     //res.status(200).send({ message: "results returned", success: true });
