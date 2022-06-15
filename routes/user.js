@@ -89,4 +89,51 @@ router.get('/myRecipes', async (req,res,next) => {
   }
 });
 
+
+
+
+router.post("/recipe", async (req, res, next) => {
+   
+  try {
+
+    // if(req.session.user_id==null){
+    //   throw { status: 401, message: "You must log in in order to load a recipe to the website" };
+    // }
+
+    let recipe_details = {
+      
+      user_id: req.session.user_id,
+      title: req.body.title,
+      readyInMinutes: req.body.readyInMinutes,
+      image: req.body.image,
+      popularity:50, //by default  
+      vegan: req.body.vegan,
+      vegetarian: req.body.vegetarian,
+      glutenFree: req.body.glutenFree,
+      ingridients: req.body.ingridients,
+      instructions: req.body.instructions,
+      servings: req.body.servings
+      
+    }
+
+
+    await DButils.execQuery(
+
+      `INSERT INTO recipes (user_id,title,readyInMinutes,image,popularity,vegan,vegetarian, glutenFree,ingridients,instructions,servings ) VALUES (
+        '${recipe_details.user_id}', '${recipe_details.title}', '${recipe_details.readyInMinutes}',
+      '${recipe_details.image}', 50, '${recipe_details.vegan}', '${recipe_details.vegetarian}', '${recipe_details.glutenFree}', '${recipe_details.ingridients}', '${recipe_details.instructions}', '${recipe_details.servings}')`
+
+    );
+
+    res.status(201).send({ message: "recipe created", success: true });
+  
+
+
+  } catch (error) {
+  next(error);
+}
+
+});
+
+
 module.exports = router;

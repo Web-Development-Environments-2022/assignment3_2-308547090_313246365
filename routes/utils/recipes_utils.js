@@ -43,6 +43,7 @@ async function getRecipeDetails(recipe_id,user_id) {
         isFavorite: IsFavorite,
         wasWatched: WasWatched,
 
+
     }
 }
 
@@ -96,7 +97,7 @@ function extractPreviewRecipeDetails(recipe_info,user_id){
     )
 }
 
-async function getRandomRecipes() {
+async function getRandomRecipesFromAPI() {
     const response = await axios.get(`${api_domain}/random`,{
         params: {
 
@@ -104,9 +105,19 @@ async function getRandomRecipes() {
             apiKey: process.env.spooncular_apiKey
         }
     });
+    
     return response.data;
 }
 
+
+async function getRandomRecipes(){
+    let my_random_list = await getRandomRecipesFromAPI();
+    let my_random_list_ids = my_random_list.recipes.map((element) => (element.id)); //extracting the recipe ids into array
+
+    return getRecipesPreview(my_random_list_ids);
+
+    
+}
 
 async function getRecipesSearchPreview(recipe_ids_list,user_id){
     let promises = [];
@@ -192,7 +203,7 @@ function extractSearchResultsDetails(recipe_info,user_id){
 
 async function getSearchResults(query1, titleMatch1, number1 ,cuisine1, diet1, intolerances1,user_id){
 
-    let my_search_list = await searchRecipes(query1, titleMatch1, number1 ,cuisine1, diet1, intolerances1) 
+    let my_search_list = await searchRecipes(query1, titleMatch1, number1 ,cuisine1, diet1, intolerances1);
     let my_search_list_ids = my_search_list.map((element) => (element.id)); //extracting the recipe ids into array
     return await getRecipesSearchPreview(my_search_list_ids,user_id)
 
@@ -249,7 +260,6 @@ async function GetFromTable(tablename,user_id){
 };
 
 exports.getRecipesPreview = getRecipesPreview;
-exports.getRandomRecipes =getRandomRecipes;
 exports.getRecipeDetails = getRecipeDetails;
 exports.searchRecipes = searchRecipes;
 exports.getSearchResults = getSearchResults;
