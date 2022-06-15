@@ -37,6 +37,7 @@ async function getRecipeDetails(recipe_id) {
         ingredients: extendedIngredients,
         instructions: instructions
 
+
     }
 }
 
@@ -54,7 +55,7 @@ TODO:
 function extractPreviewRecipeDetails(recipe_info){
     return recipe_info.map((recipe_info) =>{
         let data = recipe_info;
-
+           
         
         if(recipe_info.data!= null){
             data = recipe_info.data;
@@ -68,6 +69,7 @@ function extractPreviewRecipeDetails(recipe_info){
             vegan,
             vegetarian,
             glutenFree,
+           
         } = data;
         return {
             id: id,
@@ -78,12 +80,13 @@ function extractPreviewRecipeDetails(recipe_info){
             vegan: vegan,
             vegetarian: vegetarian,
             glutenFree: glutenFree,
+           
     
         }
     }) 
 }
 
-async function getRandomRecipes() {
+async function getRandomRecipesFromAPI() {
     const response = await axios.get(`${api_domain}/random`,{
         params: {
 
@@ -91,9 +94,20 @@ async function getRandomRecipes() {
             apiKey: process.env.spooncular_apiKey
         }
     });
+    
     return response.data;
 }
 
+
+
+async function getRandomRecipes(){
+    let my_random_list = await getRandomRecipesFromAPI();
+    let my_random_list_ids = my_random_list.recipes.map((element) => (element.id)); //extracting the recipe ids into array
+
+    return getRecipesPreview(my_random_list_ids);
+
+    
+}
 
 async function getRecipesSearchPreview(recipe_ids_list){
     let promises = [];
@@ -170,16 +184,15 @@ function extractSearchResultsDetails(recipe_info){
 
 async function getSearchResults(query1, titleMatch1, number1 ,cuisine1, diet1, intolerances1){
 
-    let my_search_list = await searchRecipes(query1, titleMatch1, number1 ,cuisine1, diet1, intolerances1) 
+    let my_search_list = await searchRecipes(query1, titleMatch1, number1 ,cuisine1, diet1, intolerances1);
     let my_search_list_ids = my_search_list.map((element) => (element.id)); //extracting the recipe ids into array
-    return await getRecipesSearchPreview(my_search_list_ids)
+    return await getRecipesSearchPreview(my_search_list_ids);
 
 }
 
-
-
+exports.getRandomRecipesFromAPI = getRandomRecipesFromAPI;
+exports.getRandomRecipes = getRandomRecipes;
 exports.getRecipesPreview = getRecipesPreview;
-exports.getRandomRecipes =getRandomRecipes;
 exports.getRecipeDetails = getRecipeDetails;
 exports.searchRecipes = searchRecipes;
 exports.getSearchResults = getSearchResults;

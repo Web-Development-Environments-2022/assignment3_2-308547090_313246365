@@ -63,7 +63,7 @@ paths:
         style: simple
         explode: false
         schema:
-          $ref: '#/components/schemas/RecipePreview'
+          $ref: '#/components/schemas/list_of_randoms'
       responses:
         "200":
           description: Successfully pulled the random recipes info
@@ -827,12 +827,15 @@ components:
       items:
         $ref: '#/components/schemas/RecipePreview'
     RandomRecipes:
+      min
       type: array
       description: 3 random recipes on the left side of the screen
       example:
       - recepie1
       - recepie2
       - recepie3
+      minItems: 3
+      maxItems: 3
       items:
         $ref: '#/components/schemas/RecipePreview'
     ListOfPreviewRecipe:
@@ -884,3 +887,7 @@ components:
           description: Is this recpie in the favourite list of the user?
           example: true
       description: Single recipe and all of its details
+    list_of_randoms:
+      type: array 
+      description:  array of previw items 
+      items: '#/components/schemas/FamilyRecipePreview'
