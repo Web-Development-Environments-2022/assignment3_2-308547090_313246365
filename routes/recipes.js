@@ -42,7 +42,7 @@ router.get("/searchRecipe", async (req, res, next) => {
 
     const recipes = await recipes_utils.getSearchResults(req.query.query,req.query.titleMatch,req.query.number,req.query.cuisine,req.query.diet,req.query.intolerances,req.session.user_id)
     if (recipes.length==0){
-      throw { status: 204, message: "No results" };
+      throw { status: 204, message: "No results to the search" };
     }
   
     //res.status(200).send({ message: "results returned", success: true });
