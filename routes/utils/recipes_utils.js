@@ -266,5 +266,6 @@ exports.getSearchResults = getSearchResults;
 exports.getRecipesPreview = getRecipesPreview;
 exports.GetIndication = GetIndication;
 exports.GetFromTable = GetFromTable;
+exports.getRandomRecipes = getRandomRecipes;
 
 
