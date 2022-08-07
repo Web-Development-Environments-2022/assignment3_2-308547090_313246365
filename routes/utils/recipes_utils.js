@@ -47,6 +47,9 @@ async function getRecipeDetails(recipe_id,user_id) {
     }
 }
 
+
+
+
 async function getRecipesPreview(recipe_ids_list,user_id){
     let promises = [];
     recipe_ids_list.map((id) =>{

@@ -219,7 +219,7 @@ paths:
                 $ref: '#/components/schemas/list_of_random'
         "404":
           description: recipeId is not exists
-  /recipes/searchRecipes/{query,titleMatch,number,cuisine,diet,intolerances}:
+  /recipes/searchRecipe/{query,titleMatch,number,cuisine,diet,intolerances}:
     get:
       tags:
       - Recipes
@@ -442,7 +442,7 @@ components:
         instructions:
           type: string 
           description: the instructions of the recipe in a dictionary of step number as key 
-          example: "{1: cut all the ingredients 2: mix all together}"
+          example: "cut all the ingredients and mix all together"
         servings:
           type: integer 
           description: to how many people can eat the dish  
@@ -502,7 +502,7 @@ components:
         instructions:
           type: string 
           description: the instructions of the recipe in a dictionary of step number as key 
-          example: "{1: cut all the ingredients 2: mix all together}"
+          example: "cut all the ingredients and mix all together"
         servings:
           type: integer 
           description: to how many people can eat the dish  
@@ -571,7 +571,7 @@ components:
         instructions:
           type: string 
           description: the instructions of the recipe in a dictionary of step number as key 
-          example: "{1: cut all the ingredients 2: mix all together}"
+          example: "cut all the ingredients and mix all together"
         servings:
           type: integer 
           description: to how many people can eat the dish  
