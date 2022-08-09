@@ -69,6 +69,8 @@ paths:
       responses:
         "200":
           description: "the user has ben successfully logged out"
+      security:
+      - cookieAuth: []
   /alive:
     get:
       tags:
@@ -96,7 +98,9 @@ paths:
         "201":
           description: User didn't upload any recipe 
         "401":
-          description: user is not authorized  
+          description: user is not authorized
+      security:
+      - cookieAuth: []
 
   
   /users/familyRecipes:
@@ -117,8 +121,31 @@ paths:
         "201":
           description: The user has no family recipes
         "401":
-          description: user is not authorized  
- 
+          description: user is not authorized 
+      security:
+      - cookieAuth: []
+  
+  /users/lastWatched:
+    get:
+      tags:
+      - Users
+      summary: Return the three recent recipes that were watched by user
+      description: Get an array of at most 3 recipes that were watched by the user.
+      responses:
+        "200":
+          description: data about the user's last watched recipes returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipePreview'
+          
+        "401":
+          description: user is not authorized
+      security:
+      - cookieAuth: []
+  
   /users/favorites:
     get:
       tags:
@@ -179,6 +206,8 @@ paths:
           description: the recipe was created successfully
         "404":
           description: recipeId is not exists
+      security:
+      - cookieAuth: []
   /recipes/{recipeId}:
     get:
       tags:
@@ -297,6 +326,8 @@ paths:
 
         "404":
           description: recipeId is not exists
+
+      
 
   
 
