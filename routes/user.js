@@ -53,6 +53,23 @@ router.get('/favorites', async (req,res,next) => {
   }
 });
 
+
+
+router.get('/lastWatched', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    let last_recipes = {};
+    const recipes_id = await user_utils.getLastWatchedRecipes(user_id);
+    let recipes_id_array = [];
+    // console.log(recipes_id);
+    recipes_id.map((element) => recipes_id_array.push(element.id)); //extracting the recipe ids into array
+    let results = await recipe_utils.getRecipesPreview(recipes_id_array, user_id);
+    res.status(200).send(results);
+  } catch(error){
+    next(error);
+  }
+});
+
 // /**
 //  * This path gets body with recipeId and save this recipe in the watched list of the logged-in user
 //  */
