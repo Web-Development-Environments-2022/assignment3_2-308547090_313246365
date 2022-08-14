@@ -41,7 +41,7 @@ router.get("/recipe", async (req, res, next) => {
       user_id = req.session.user_id;
       await user_utils.markAsWatched(user_id,req.query.id);
     }
-    const recipe = await DButils.execQuery(`SELECT * FROM familyrecipes WHERE id=${req.query.id}`);
+    const recipe = await recipes_utils.getFamilyRecipeDetails(req.query.id,user_id);
     // if(recipe==null){
     //   throw { status: 401, message: "recipe ID is not exists" }; 
     // }

@@ -47,7 +47,32 @@ async function getRecipeDetails(recipe_id,user_id) {
     }
 }
 
-
+async function getFamilyRecipeDetails(recipe_id,user_id) {
+    let recipe_info = (await DButils.execQuery(`SELECT * FROM familyrecipes WHERE id=${recipe_id}`))[0];
+    let IsFavorite = false;
+    let WasWatched = false;
+    if (user_id != undefined){
+        IsFavorite = await GetIndication("FavoriteRecipes", recipe_info.id, user_id);
+        WasWatched = await GetIndication("views", recipe_info.id, user_id);
+    }
+    return {
+        id: recipe_info.id,
+        creator: recipe_info.creator,
+        eating_time: recipe_info.eating_time,
+        title: recipe_info.title,
+        readyInMinutes: recipe_info.readyInMinutes,
+        image: recipe_info.image,
+        popularity: recipe_info.popularity,
+        vegan: recipe_info.vegan,
+        vegetarian: recipe_info.vegetarian,
+        glutenFree: recipe_info.glutenFree,
+        servings: recipe_info.servings,
+        ingredients: recipe_info.ingridients,
+        instructions: recipe_info.instructions,
+        isFavorite: recipe_info.IsFavorite,
+        wasWatched: recipe_info.WasWatched,
+    }
+}
 
 
 async function getRecipesPreview(recipe_ids_list,user_id){
@@ -264,6 +289,7 @@ async function GetFromTable(tablename,user_id){
 
 exports.getRecipesPreview = getRecipesPreview;
 exports.getRecipeDetails = getRecipeDetails;
+exports.getFamilyRecipeDetails = getFamilyRecipeDetails;
 exports.searchRecipes = searchRecipes;
 exports.getSearchResults = getSearchResults;
 exports.getRecipesPreview = getRecipesPreview;
