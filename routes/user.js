@@ -120,6 +120,28 @@ router.get('/familyRecipes', async (req,res,next) => {
 });
 
 
+
+/**
+ * This path returns a full details of a family recipe by its id
+ */
+ router.get("/myRecipe", async (req, res, next) => {
+  try {
+    let user_id;
+    
+    if (req.session && req.session.user_id){
+      user_id = req.session.user_id;
+      await user_utils.markAsWatched(user_id,req.query.id);
+    }
+    const recipe = await user_utils.getPersonalRecipeDetails(req.query.id,user_id);
+    // if(recipe==null){
+    //   throw { status: 401, message: "recipe ID is not exists" }; 
+    // }
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get('/myRecipes', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
@@ -154,7 +176,7 @@ router.post("/recipe", async (req, res, next) => {
       vegan: req.body.vegan,
       vegetarian: req.body.vegetarian,
       glutenFree: req.body.glutenFree,
-      ingridients: req.body.ingridients,
+      ingredients: req.body.ingredients,
       instructions: req.body.instructions,
       servings: req.body.servings
       
@@ -163,9 +185,9 @@ router.post("/recipe", async (req, res, next) => {
 
     await DButils.execQuery(
 
-      `INSERT INTO recipes (user_id,title,readyInMinutes,image,popularity,vegan,vegetarian, glutenFree,ingridients,instructions,servings ) VALUES (
+      `INSERT INTO recipes (user_id,title,readyInMinutes,image,popularity,vegan,vegetarian, glutenFree,ingredients,instructions,servings ) VALUES (
         '${recipe_details.user_id}', '${recipe_details.title}', '${recipe_details.readyInMinutes}',
-      '${recipe_details.image}', 0, '${recipe_details.vegan}', '${recipe_details.vegetarian}', '${recipe_details.glutenFree}', '${recipe_details.ingridients}', '${recipe_details.instructions}', '${recipe_details.servings}')`
+      '${recipe_details.image}', 0, '${recipe_details.vegan}', '${recipe_details.vegetarian}', '${recipe_details.glutenFree}', '${recipe_details.ingredients}', '${recipe_details.instructions}', '${recipe_details.servings}')`
 
     );
 
