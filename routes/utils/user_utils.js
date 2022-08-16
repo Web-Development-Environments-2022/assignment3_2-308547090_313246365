@@ -47,10 +47,10 @@ async function getFamilyRecipeDetails(recipe_id,user_id) {
     let recipe_info = (await DButils.execQuery(`SELECT * FROM familyrecipes WHERE id=${recipe_id}`))[0];
     let IsFavorite = false;
     let WasWatched = false;
-    if (user_id != undefined){
-        IsFavorite = await GetIndication("FavoriteRecipes", recipe_info.id, user_id);
-        WasWatched = await GetIndication("views", recipe_info.id, user_id);
-    }
+    // if (user_id != undefined){
+    //     IsFavorite = await GetIndication("FavoriteRecipes", recipe_info.id, user_id);
+    //     WasWatched = await GetIndication("views", recipe_info.id, user_id);
+    // }
     return {
         id: recipe_info.id,
         creator: recipe_info.creator,
