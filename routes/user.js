@@ -150,7 +150,7 @@ router.post("/recipe", async (req, res, next) => {
       title: req.body.title,
       readyInMinutes: req.body.readyInMinutes,
       image: req.body.image,
-      popularity:50, //by default  
+      popularity:0, //by default  
       vegan: req.body.vegan,
       vegetarian: req.body.vegetarian,
       glutenFree: req.body.glutenFree,
@@ -165,7 +165,7 @@ router.post("/recipe", async (req, res, next) => {
 
       `INSERT INTO recipes (user_id,title,readyInMinutes,image,popularity,vegan,vegetarian, glutenFree,ingridients,instructions,servings ) VALUES (
         '${recipe_details.user_id}', '${recipe_details.title}', '${recipe_details.readyInMinutes}',
-      '${recipe_details.image}', 50, '${recipe_details.vegan}', '${recipe_details.vegetarian}', '${recipe_details.glutenFree}', '${recipe_details.ingridients}', '${recipe_details.instructions}', '${recipe_details.servings}')`
+      '${recipe_details.image}', 0, '${recipe_details.vegan}', '${recipe_details.vegetarian}', '${recipe_details.glutenFree}', '${recipe_details.ingridients}', '${recipe_details.instructions}', '${recipe_details.servings}')`
 
     );
 
