@@ -65,8 +65,8 @@ async function getFamilyRecipeDetails(recipe_id,user_id) {
         servings: recipe_info.servings,
         ingredients: recipe_info.ingridients,
         instructions: recipe_info.instructions,
-        isFavorite: recipe_info.IsFavorite,
-        wasWatched: recipe_info.WasWatched,
+        isFavorite: IsFavorite,
+        wasWatched: WasWatched,
     }
 }
 
