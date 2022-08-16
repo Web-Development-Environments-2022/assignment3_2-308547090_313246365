@@ -43,6 +43,44 @@ async function getLastWatchedRecipes(user_id){
 
 }
 
+async function getFamilyRecipeDetails(recipe_id,user_id) {
+    let recipe_info = (await DButils.execQuery(`SELECT * FROM familyrecipes WHERE id=${recipe_id}`))[0];
+    let IsFavorite = false;
+    let WasWatched = false;
+    if (user_id != undefined){
+        IsFavorite = await GetIndication("FavoriteRecipes", recipe_info.id, user_id);
+        WasWatched = await GetIndication("views", recipe_info.id, user_id);
+    }
+    return {
+        id: recipe_info.id,
+        creator: recipe_info.creator,
+        eating_time: recipe_info.eating_time,
+        title: recipe_info.title,
+        readyInMinutes: recipe_info.readyInMinutes,
+        image: recipe_info.image,
+        popularity: recipe_info.popularity,
+        vegan: recipe_info.vegan,
+        vegetarian: recipe_info.vegetarian,
+        glutenFree: recipe_info.glutenFree,
+        servings: recipe_info.servings,
+        ingredients: recipe_info.ingridients,
+        instructions: recipe_info.instructions,
+        isFavorite: recipe_info.IsFavorite,
+        wasWatched: recipe_info.WasWatched,
+    }
+}
+
+//Check if a user_id - Recipe_id combination exists in a given table name
+async function GetIndication(tablename, recipe_id, user_id){
+    let users = [];
+    users = await DButils.execQuery(`SELECT user_id FROM ${tablename} WHERE id=${recipe_id} AND user_id=${user_id}`);
+    if (users.length != 0){
+        return true;
+    }
+    return false;
+}
+
+
 
 exports.getFamilyRecipes = getFamilyRecipes;
 exports.markAsWatched = markAsWatched;
@@ -50,3 +88,5 @@ exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.getMyRecipes = getMyRecipes;
 exports.getLastWatchedRecipes = getLastWatchedRecipes;
+exports.getFamilyRecipeDetails = getFamilyRecipeDetails;
+exports.GetIndication = GetIndication;

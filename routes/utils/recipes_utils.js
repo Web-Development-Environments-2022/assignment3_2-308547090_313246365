@@ -47,33 +47,6 @@ async function getRecipeDetails(recipe_id,user_id) {
     }
 }
 
-async function getFamilyRecipeDetails(recipe_id,user_id) {
-    let recipe_info = (await DButils.execQuery(`SELECT * FROM familyrecipes WHERE id=${recipe_id}`))[0];
-    let IsFavorite = false;
-    let WasWatched = false;
-    if (user_id != undefined){
-        IsFavorite = await GetIndication("FavoriteRecipes", recipe_info.id, user_id);
-        WasWatched = await GetIndication("views", recipe_info.id, user_id);
-    }
-    return {
-        id: recipe_info.id,
-        creator: recipe_info.creator,
-        eating_time: recipe_info.eating_time,
-        title: recipe_info.title,
-        readyInMinutes: recipe_info.readyInMinutes,
-        image: recipe_info.image,
-        popularity: recipe_info.popularity,
-        vegan: recipe_info.vegan,
-        vegetarian: recipe_info.vegetarian,
-        glutenFree: recipe_info.glutenFree,
-        servings: recipe_info.servings,
-        ingredients: recipe_info.ingridients,
-        instructions: recipe_info.instructions,
-        isFavorite: recipe_info.IsFavorite,
-        wasWatched: recipe_info.WasWatched,
-    }
-}
-
 
 async function getRecipesPreview(recipe_ids_list,user_id){
     let promises = [];
@@ -128,12 +101,10 @@ function extractPreviewRecipeDetails(recipe_info,user_id){
 async function getRandomRecipesFromAPI() {
     const response = await axios.get(`${api_domain}/random`,{
         params: {
-
             number: 3,
             apiKey: process.env.spooncular_apiKey
         }
     });
-    
     return response.data;
 }
 
@@ -141,10 +112,7 @@ async function getRandomRecipesFromAPI() {
 async function getRandomRecipes(){
     let my_random_list = await getRandomRecipesFromAPI();
     let my_random_list_ids = my_random_list.recipes.map((element) => (element.id)); //extracting the recipe ids into array
-
     return getRecipesPreview(my_random_list_ids);
-
-    
 }
 
 async function getRecipesSearchPreview(recipe_ids_list,user_id){
@@ -159,11 +127,8 @@ async function getRecipesSearchPreview(recipe_ids_list,user_id){
 
 //=== search function to the spoonacular API =====
 async function searchRecipes(query1, titleMatch1, number1 ,cuisine1, diet1, intolerances1) {
-
-
     const response =  await axios.get(`${api_domain}/complexSearch`,{
         params: {
-
             query: query1,
             titleMatch: titleMatch1,
             number: number1,
@@ -289,7 +254,6 @@ async function GetFromTable(tablename,user_id){
 
 exports.getRecipesPreview = getRecipesPreview;
 exports.getRecipeDetails = getRecipeDetails;
-exports.getFamilyRecipeDetails = getFamilyRecipeDetails;
 exports.searchRecipes = searchRecipes;
 exports.getSearchResults = getSearchResults;
 exports.getRecipesPreview = getRecipesPreview;
