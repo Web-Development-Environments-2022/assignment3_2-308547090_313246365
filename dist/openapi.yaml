@@ -101,14 +101,13 @@ paths:
           description: user is not authorized
       security:
       - cookieAuth: []
-
   
   /users/familyRecipes:
     get:
       tags:
       - Users
-      summary: Returns contan of all the recipes that belongs to the user's family
-      description: Returns contan of all the recipes that belongs to the user's family
+      summary: Returns contant of all the recipes that belongs to the user's family
+      description: Returns contant of all the recipes that belongs to the user's family
       responses:
         "200":
           description: data about the user's  family recipes returned
