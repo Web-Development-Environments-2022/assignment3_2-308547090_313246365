@@ -107,7 +107,7 @@ router.get('/familyRecipes', async (req,res,next) => {
     
     if (req.session && req.session.user_id){
       user_id = req.session.user_id;
-      await user_utils.markAsWatched(user_id,req.query.id);
+      //await user_utils.markAsWatched(user_id,req.query.id);
     }
     const recipe = await user_utils.getFamilyRecipeDetails(req.query.id,user_id);
     // if(recipe==null){
@@ -130,7 +130,7 @@ router.get('/familyRecipes', async (req,res,next) => {
     
     if (req.session && req.session.user_id){
       user_id = req.session.user_id;
-      await user_utils.markAsWatched(user_id,req.query.id);
+      //await user_utils.markAsWatched(user_id,req.query.id);
     }
     const recipe = await user_utils.getPersonalRecipeDetails(req.query.id,user_id);
     // if(recipe==null){
