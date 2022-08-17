@@ -8,7 +8,7 @@ servers:
 - url: "http://127.0.0.1:3000"
 # remote:
 # - url: "http://132.72.65.211"
-  description: SwaggerHub API Auto Mocking hey
+  description: API for Server Site "by the cook"
 tags:
 - name: Auth
   description: All authentication related routes
@@ -17,7 +17,7 @@ tags:
 - name: Recipes
   description: All reciepes general info
 paths:
-  /register:
+  /Register:
     post:
       tags:
       - Auth
@@ -35,7 +35,7 @@ paths:
           description: A new user has been added
         "400":
           description: wrong input parameters
-  /login:
+  /Login:
     post:
       tags:
       - Auth
@@ -61,7 +61,7 @@ paths:
         "401":
           description: Authentication failed
 
-  /logout:
+  /Logout:
     post:
       tags:
         - Auth
@@ -94,7 +94,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/list_of_preview'
+                  $ref: '#/components/schemas/list_of_personal'
         "201":
           description: User didn't upload any recipe 
         "401":
@@ -123,6 +123,37 @@ paths:
           description: user is not authorized 
       security:
       - cookieAuth: []
+  
+
+  /users/familyRecipe/{id}:
+    get:
+      tags:
+      - Users
+      summary: Return full details about the family recipe of the logged user  by recipe ID
+      description: Return full details about the family recipe of the logged user  by recipe ID
+      parameters:
+      - name: id
+        in: path
+        description: recipe's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: data about the recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FamilyRecipe'
+        "401":
+          description: user is not authorized 
+        "404":
+          description: recipeId is not exists
+      security:
+      - cookieAuth: []  
+
   
   /users/lastWatched:
     get:
@@ -207,14 +238,43 @@ paths:
           description: recipeId is not exists
       security:
       - cookieAuth: []
-  /recipes/{recipeId}:
+  
+  
+  /users/myRecipe/{id}:
+    get:
+      tags:
+      - Users
+      summary: Return full details about the personal recipe of the logged user  by recipe ID
+      description: Return full details about the personal recipe of the logged user  by recipe ID
+      parameters:
+      - name: id
+        in: path
+        description: recipe's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: data about the recipe
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonalRecipe'
+        "404":
+          description: recipeId is not exists
+      security:
+      - cookieAuth: []
+  
+  /recipes/recipe/{id}:
     get:
       tags:
       - Recipes
-      summary: Return full details on recipe by his ID
-      description: Return full details on recipe by his ID
+      summary: Return full details from the spoonculare about the recipe by  its ID
+      description: Return full details on recipe by its ID
       parameters:
-      - name: recipeId
+      - name: id
         in: path
         description: recipe's id
         required: true
@@ -236,8 +296,8 @@ paths:
     get:
       tags:
       - Recipes
-      summary: Returns 3 random recipes in preview format 
-      description: Returns 3 random recipes in preview format 
+      summary: Returns 3 random recipes from spoonculare in preview format 
+      description: Returns 3 random recipes from spoonculare in preview format 
       responses:
         "200":
           description: three random recipes in preview format 
@@ -247,7 +307,9 @@ paths:
                 $ref: '#/components/schemas/list_of_random'
         "404":
           description: recipeId is not exists
-  /recipes/searchRecipe/{query,titleMatch,number,cuisine,diet,intolerances}:
+          
+          
+  /recipes/searchRecipe/{query},{titleMatch},{number},{cuisine},{diet},{intolerances}:
     get:
       tags:
       - Recipes
@@ -257,21 +319,21 @@ paths:
       - name: query
         in: path
         description: text to search n content  
-        required: false
+        required: true
         style: simple
         explode: false
         schema:
           type: string
-          example: pasta
+          example: Macaroni 
       - name: titleMatch
         in: path
         description: text to search in recipe title 
-        required: false
+        required: true
         style: simple
         explode: false
         schema:
           type: string
-          example: pasta
+          example: Macaroni 
       
       - name: number
         in: path
@@ -286,7 +348,7 @@ paths:
       - name: cuisine
         in: path
         description: the cuisine we want to filter by the results
-        required: false
+        required: true
         style: simple
         explode: false
         schema:
@@ -296,7 +358,7 @@ paths:
       - name: diet
         in: path
         description: the diet we want to filter by the results
-        required: false
+        required: true
         style: simple
         explode: false
         schema:
@@ -306,7 +368,7 @@ paths:
       - name: intolerances
         in: path
         description: the intolerances whe want to filter by the results
-        required: false
+        required: true
         style: simple
         explode: false
         schema:
@@ -342,15 +404,15 @@ components:
           minLength: 3
           type: string
           description: username conatins between 3 to 8 letters only
-          example: my_name
+          example: mor
         firstname:
           type: string
           description: user's first name
-          example: my_first_name
+          example: mor
         lastname:
           type: string
           description: user's last name
-          example: my_last_name
+          example: levi
         country:
           type: string
           description: user's country
@@ -362,12 +424,12 @@ components:
           description: password conatins between 5 to 10 chars, at least one of them
             is a number and a special char
           format: password
-          example: my_name@12
+          example: Password1!
         email:
           pattern: email
           type: string
           description: user's email
-          example: my_name12@gmail.com
+          example: mor12@gmail.com
 
 
 
@@ -391,8 +453,8 @@ components:
           description: password conatins at least one number and one special char
           format: password
       example:
-        username: my_name
-        password: my_name@12
+        username: mor
+        password: Password1!
     RecipePreview:
       type: object
       properties:
@@ -436,7 +498,7 @@ components:
         isFavourite:
           type: boolean
           description: indication if the recipe is in the favourite of the user's profile, only if he logs in otherwise false
-          example: false
+          example: true
     UploadRecipe:
       type: object
       properties:
@@ -467,8 +529,8 @@ components:
           example: false
         ingredients:
           type: string 
-          description: the ingredients of the recipe in a dictionary withe amount as value 
-          example: "{milk: 1 cup, eggs: 3}"
+          description: the ingredients of the recipe in a spesific string pattern  with amount as value 
+          example: "milk: 1 cup, eggs: 3"
         instructions:
           type: string 
           description: the instructions of the recipe in a dictionary of step number as key 
@@ -517,6 +579,70 @@ components:
           type: boolean
           description: indication if the recipe is gluten free
           example: false
+        wasWatched:
+          type: boolean
+          description: indication if the recipe was watched by the user or not, only for users that logged in otherwise false 
+          example: false
+        isFavourite:
+          type: boolean
+          description: indication if the recipe is in the favourite of the user's profile, only if he logs in otherwise false
+          example: true
+        ingredients:
+          type: string 
+          description: the ingredients of the recipe in a dictionary withe amount as value 
+          example: "{milk: 1 cup, eggs: 3}"
+        instructions:
+          type: string 
+          description: the instructions of the recipe in a dictionary of step number as key 
+          example: "cut all the ingredients and mix all together"
+        servings:
+          type: integer 
+          description: to how many people can eat the dish  
+          example: 4
+          
+          
+          
+          
+    PersonalRecipe:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: recipe identifier
+          example: 102
+        user_id:
+          type: integer
+          description: user identifier
+          example: 1
+        title:
+          type: string
+          description: recipe name
+          example: Simple Macaroni and Cheese
+        image:
+          type: string
+          description: recipe image
+          format: URL
+          example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+        readyInMinutes:
+          type: integer
+          description: the time takes to make this recipe
+          example: 45
+        popularity:
+          type: integer
+          description: how many likes got this recipe
+          example: 5987
+        vegetarian:
+          type: number
+          description: indication if the recipe is vegetarian 0 or 1 
+          example: 0
+        vegan:
+          type: number
+          description: indication if the recipe is vegan 0 or 1 
+          example: 1
+        glutenFree:
+          type: number
+          description: indication if the recipe is gluten free 0 or 1 
+          example: 0
         wasWatched:
           type: boolean
           description: indication if the recipe was watched by the user or not, only for users that logged in otherwise false 
@@ -575,17 +701,17 @@ components:
           description: how many likes got this recipe
           example: 5987
         vegetarian:
-          type: boolean
-          description: indication if the recipe is vegetarian
-          example: false
+          type: number
+          description: indication if the recipe is vegetarian  0 or 1 
+          example: 1
         vegan:
-          type: boolean
-          description: indication if the recipe is vegan
-          example: false
+          type: number
+          description: indication if the recipe is vegan 0 or 1 
+          example: 0
         glutenFree:
-          type: boolean
-          description: indication if the recipe is gluten free
-          example: false
+          type: number
+          description: indication if the recipe is gluten free  0 or 1 
+          example: 0
         wasWatched:
           type: boolean
           description: indication if the recipe was watched by the user or not, only for users that logged in otherwise false 
@@ -596,8 +722,8 @@ components:
           example: false
         ingredients:
           type: string 
-          description: the ingredients of the recipe in a dictionary withe amount as value 
-          example: "{milk: 1 cup, eggs: 3}"
+          description: the ingredients of the recipe in a specific string pattern with amount as value 
+          example: "milk: 1 cup, eggs: 3"
         instructions:
           type: string 
           description: the instructions of the recipe in a dictionary of step number as key 
@@ -636,6 +762,11 @@ components:
       description:  array of RecipePreview items   
       items: 
           $ref: '#/components/schemas/RecipePreview'
+    list_of_personal:
+      type: array 
+      description:  array of personal recipes of the user    
+      items: 
+          $ref: '#/components/schemas/PersonalRecipe'
 
 
 
